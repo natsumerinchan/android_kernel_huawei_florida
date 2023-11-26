@@ -3,6 +3,10 @@
 
 KERNEL_PATH=$PWD
 
+# Setup KernelSU
+test -d ./KernelSU && rm -rf ./KernelSU
+curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
+
 # Special Clean For Huawei Kernel.
 if [ -d include/config ];
 then
@@ -20,6 +24,11 @@ export CROSS_COMPILE=aarch64-linux-android-
 
 export GCC_COLORS=auto
 export ARCH=arm64
+
+if [ "$1" == "clean" ]; then
+	rm -rf ./out
+fi
+
 if [ ! -d "out" ];
 then
 	mkdir out

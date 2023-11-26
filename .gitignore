@@ -44,3 +44,4 @@ scripts/kconfig/zconf.lex.c
 scripts/kconfig/zconf.hash.c
 scripts/kconfig/conf
 scripts/basic/fixdep
+KernelSU
