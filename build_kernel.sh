@@ -2,10 +2,8 @@
 #设置环境
 
 KERNEL_PATH=$PWD
-
-# Setup KernelSU
-test -d ./KernelSU && rm -rf ./KernelSU
-curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
+SETUP_KERNELSU=true
+KERNELSU_TAG=main
 
 # Special Clean For Huawei Kernel.
 if [ -d include/config ];
@@ -42,6 +40,17 @@ echo "Setting EXTRAVERSION"
 export EV=EXTRAVERSION=_Kirin659_$v
 
 date="$(date +%Y.%m.%d-%I:%M)"
+
+# 配置KernelSU
+if [ "$SETUP_KERNELSU" == "true" ];
+then
+	curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s "$KERNELSU_TAG"
+else
+	test -d "$KERNEL_PATH/KernelSU" && rm -rf "$KERNEL_PATH/KernelSU"
+	test -e "$KERNEL_PATH/drivers/kernelsu" && rm "$KERNEL_PATH/drivers/kernelsu"
+	grep -q "kernelsu" "$KERNEL_PATH/drivers/Makefile" && sed -i '/kernelsu/d' "$KERNEL_PATH/drivers/Makefile"
+	grep -q "kernelsu" "$KERNEL_PATH/drivers/Kconfig" && sed -i '/kernelsu/d' "$KERNEL_PATH/drivers/Kconfig"
+fi
 
 #构建内核部分
 echo "***Building Kernel...***"
